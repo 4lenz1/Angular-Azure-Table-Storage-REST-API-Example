@@ -14,7 +14,6 @@ export class AzureTableStorageService {
   constructor(private http: HttpClient) { }
 
   private accountName: string = credential.accountName;
-  //private accesskey: string = 'g3Vqc8H6I2MU2PXODy3CHpOjq6ho3TlGjuxJJq93bu5RGP61xSb2mZFT41W5zdPTM/GBPmzpRuQ8ZVCOgq4cOw==';
   private accesskey: string = credential.accesskey;
 
   private tableEndPoint: string = `https://${this.accountName}.table.core.windows.net/Tables`;

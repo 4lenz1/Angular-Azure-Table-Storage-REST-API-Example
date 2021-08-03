@@ -46,4 +46,4 @@ testem.log
 Thumbs.db
 
 #Azure connection string
-crediental.json
+src\crediental.json

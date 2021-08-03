@@ -1,7 +1,4 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
-
-import { Observable } from 'rxjs';
+import { Component } from '@angular/core';
 // import { HmacSHA256, SHA256 , enc} from 'crypto-js';
 import * as cryptoJS from 'crypto-js';
 import { AzureTableStorageService } from './azure-table-storage.service';

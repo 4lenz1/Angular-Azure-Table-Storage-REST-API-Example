@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 // import { HmacSHA256, SHA256 , enc} from 'crypto-js';
 
 import * as cryptoJS from 'crypto-js';
-import credential  from "../crediental.json";
+import credential  from "../../crediental.json";
 @Injectable({
   providedIn: 'root'
 })

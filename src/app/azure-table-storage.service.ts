@@ -17,7 +17,7 @@ export class AzureTableStorageService {
   private accesskey: string = credential.accesskey;
 
   private entitiesEndpoint: string = `https://${this.accountName}.table.core.windows.net/`;
-  private tableEndPoint: string = `${this.entitiesEndpoint}/Tables`;
+  private tableEndPoint: string = `${this.entitiesEndpoint}Tables`;
 
 
   createTable(tableName: string): Observable<any> {

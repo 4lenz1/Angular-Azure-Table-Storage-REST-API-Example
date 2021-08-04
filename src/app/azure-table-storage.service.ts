@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 // import { HmacSHA256, SHA256 , enc} from 'crypto-js';
 
 import * as cryptoJS from 'crypto-js';
-import credential  from "../../crediental.json";
+import credential from "../../crediental.json";
 @Injectable({
   providedIn: 'root'
 })
@@ -22,21 +22,21 @@ export class AzureTableStorageService {
 
   createTable(tableName: string): Observable<any> {
     // set http options
-    const httpOptions: {} = { headers: this.generateHeader('Tables') };
+    const httpOptions: { headers: HttpHeaders } = { headers: this.generateHeader('Tables') };
 
     return this.http.post<any>(this.tableEndPoint, JSON.stringify({ "TableName": tableName }), httpOptions);
   }
 
   // list all table under storage account
   queryTable(): Observable<any> {
-    const httpOptions: {} = { headers: this.generateHeader('Tables') };
+    const httpOptions: { headers: HttpHeaders } = { headers: this.generateHeader('Tables') };
 
     return this.http.get(this.tableEndPoint, httpOptions);
   }
   // delete table
   deleteTable(tableName: string): Observable<any> {
     const operator: string = `Tables('${tableName}')`
-    const httpOptions: {} = { headers: this.generateHeader(operator) };
+    const httpOptions: { headers: HttpHeaders } = { headers: this.generateHeader(operator) };
 
     return this.http.delete(`${this.tableEndPoint}('${tableName}')`, httpOptions);
   }
@@ -54,7 +54,7 @@ export class AzureTableStorageService {
 
   private queryEntities(tableName: string, queryString: string): Observable<any> {
     const operator: string = `${tableName}${queryString}`;
-    const httpOptions: {} = { headers: this.generateHeader(operator) };
+    const httpOptions: { headers: HttpHeaders } = { headers: this.generateHeader(operator) };
     return this.http.get<any>(`${this.entitiesEndpoint}${tableName}${queryString}`, httpOptions);
   }
 

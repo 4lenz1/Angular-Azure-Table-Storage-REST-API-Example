@@ -64,7 +64,7 @@ export class AppComponent {
 
   onQueryEntitiesWithFilterAndSelectClick() {
     // query entites with filter
-    const filter: string = '(Rowkey eq 1611590861)';
+    const filter: string = `(Rowkey eq '1611590281' and PartitionKey eq '10s')`;
 
     const select: string[] = ['PartitionKey', 'RowKey', 'Data', 'Version'];
 

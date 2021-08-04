@@ -43,14 +43,15 @@ export class AzureTableStorageService {
   // query row with partitionKey and rowKey
   queryEntitiesWithPartitionKeyAndRowKey(tableName: string, filter: { partitionKey: string, rowKey: string }): Observable<any> {
     const queryString = `(PartitionKey='${filter.partitionKey}',RowKey='${filter.rowKey}')`;
-
-    return this.queryEntities(tableName, queryString);
+    const operator: string = `${tableName}${queryString}`;
+    return this.queryEntities(tableName, queryString, operator);
   }
 
   queryEntitiesWithFilterAndSelect(tableName: string, filter: string, select: string): Observable<any> {
     ///myaccount/Customers()?$filter=(Rating%20ge%203)%20and%20(Rating%20le%206)&$select=PartitionKey,RowKey,Address,CustomerSince
     const queryString: string = `()?$filter=${filter}&$select=${select}`;
-    return this.queryEntities(this.accountName + '/' + tableName, queryString);
+    const operator: string = `${tableName}()`;
+    return this.queryEntities(tableName, queryString, operator);
   }
 
   insertEntity(tableName: string, payload: {}): Observable<any> {
@@ -71,8 +72,8 @@ export class AzureTableStorageService {
   }
 
 
-  private queryEntities(tableName: string, queryString: string): Observable<any> {
-    const operator: string = `${tableName}${queryString}`;
+  private queryEntities(tableName: string, queryString: string, operator: string): Observable<any> {
+
     const httpOptions: { headers: HttpHeaders } = { headers: this.generateDefaultHeader(operator) };
     return this.http.get<any>(`${this.entitiesEndpoint}${tableName}${queryString}`, httpOptions);
   }
@@ -97,7 +98,7 @@ export class AzureTableStorageService {
 
   // generate header
   private generateDefaultHeader(operator: string): HttpHeaders {
-    console.log('query operator', operator);
+
     const date = new Date().toUTCString();
     const authentication: string = this.generateAuthorization(operator);
     return new HttpHeaders({

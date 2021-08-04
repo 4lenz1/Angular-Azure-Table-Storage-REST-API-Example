@@ -4,5 +4,5 @@
 <button (click)="onQueryEntitiesClick()">Query with Rowkey and PartitionKey</button>
 <button (click)="onQueryEntitiesWithFilterAndSelectClick()">Query with Filter and Select</button>
 <button (click)="onInsertEntityClick()">Insert record</button>
-
+<button [disabled]="!lastPayload" (click)="onDeleteEntityClick()">Delete record</button>
 

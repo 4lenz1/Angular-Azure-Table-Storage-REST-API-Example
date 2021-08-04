@@ -1,5 +1,5 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Component, Injectable, OnInit } from '@angular/core';
+import { Injectable } from '@angular/core';
 
 import { Observable } from 'rxjs';
 // import { HmacSHA256, SHA256 , enc} from 'crypto-js';
@@ -43,6 +43,7 @@ export class AzureTableStorageService {
   // query row with partitionKey and rowKey
   queryEntitiesWithPartitionKeyAndRowKey(tableName: string, filter: { partitionKey: string, rowKey: string }): Observable<any> {
     const queryString = `(PartitionKey='${filter.partitionKey}',RowKey='${filter.rowKey}')`;
+
     return this.queryEntities(tableName, queryString);
   }
 
@@ -57,7 +58,19 @@ export class AzureTableStorageService {
     const httpOptions: { headers: HttpHeaders } = { headers: this.generateHeader(operator) };
 
     return this.http.post(`${this.entitiesEndpoint}${tableName}`, payload, httpOptions);
+  }
 
+  deleteEntity(tableName: string, filter: { partitionKey: string, rowKey: string }): Observable<any> {
+    const queryString = `${tableName}(PartitionKey='${filter.partitionKey}',RowKey='${filter.rowKey}')`;
+    const httpOptions: { headers: HttpHeaders } = { headers: this.generateHeader(queryString) };
+
+    // require If-Match in delete
+    const deleteHeaderOption = {
+      headers : new Headers({ 'Content-Type': 'application/'})
+    };
+    httpOptions.headers.set('If-Match', '*');
+
+    return this.http.delete(`${this.entitiesEndpoint}${queryString}`, httpOptions);
   }
 
 
@@ -88,6 +101,7 @@ export class AzureTableStorageService {
 
   // generate header
   private generateHeader(operator: string): HttpHeaders {
+    console.log('query operator', operator);
     const date = new Date().toUTCString();
     const authentication: string = this.generateAuthorization(operator);
     return new HttpHeaders({

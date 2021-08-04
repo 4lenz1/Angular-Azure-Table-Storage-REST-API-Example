@@ -8,6 +8,8 @@ import { AzureTableStorageService } from './azure-table-storage.service';
 export class AppComponent {
   title = 'test';
   tableName = 'PackAM48675200715013';
+  lastPayload: {} = null;
+  testTableName = 'myTable';
   constructor(private azureTableStorageService: AzureTableStorageService) { }
 
   ngOnInit(): void {
@@ -76,35 +78,68 @@ export class AppComponent {
 
   onInsertEntityClick() {
 
-    const tableName = 'myTable';
-    const rowkey: string = Math.floor(Math.random() * 1000).toString();
-    const payload: {} = {
-      // copy from https://docs.microsoft.com/en-us/rest/api/storageservices/insert-entity
-      "Address": 'Mountain View',
-      "Age": 23,
-      "AmountDue": 200.23,
-      "CustomerCode@odata.type": "Edm.Guid",
-      "CustomerCode": "c9da6455-213d-42c9-9a79-3e9149a57833",
-      "CustomerSince@odata.type": "Edm.DateTime",
-      "CustomerSince": "2008-07-10T00:00:00",
-      "IsActive": true,
-      "NumberOfOrders@odata.type": "Edm.Int64",
-      "NumberOfOrders": "255",
-      "PartitionKey": "mypartitionkey",
-      "RowKey": rowkey,
-    };
+
+    const payload = this.generatePayload();
     this.azureTableStorageService
-      .insertEntity(tableName, payload)
+      .insertEntity(this.testTableName, payload)
       .subscribe(response => {
         console.log('entities inserted', response);
+        this.setLastEntity(response);
       }
         , err => {
           console.error('error on insertEntity', err);
-          // table already created
+          // CANNOT find table
           if (err.error['odata.error'].code === 'TableNotFound') {
-            console.log(`cannot insert eneity , please create table named ${tableName} first`);
+            console.log(`cannot insert eneity , please create table named ${this.testTableName} first`);
           }
         });
+  }
+
+  onDeleteEntityClick() {
+    if (!this.lastPayload) {
+      return;
+    }
+    const lastPayload = this.getLastEntity();
+    const filter: { partitionKey: string, rowKey: string } = {
+      rowKey: lastPayload['RowKey'],
+      partitionKey: lastPayload['PartitionKey'].toString(),
+    }
+    this.azureTableStorageService.deleteEntity(this.testTableName, filter)
+      .subscribe(
+        response => console.log(response)
+        , err => console.error('error on deleteEntity')
+      );
+  }
+
+  private setLastEntity(payload: {}): void {
+    console.log('set the lastest entity');
+    this.lastPayload = payload;
+  }
+
+  private getLastEntity(): {} {
+    console.log('get the lastest entity');
+    return this.lastPayload;
+  }
+
+  private generatePayload(): {} {
+    const rowkey: string = Math.floor(Math.random() * 1000).toString();
+    const payload: {} = {
+      // copy from https://docs.microsoft.com/en-us/rest/api/storageservices/insert-entity
+      'Address': 'Mountain View',
+      'Age': 23,
+      'AmountDue': 200.23,
+      'CustomerCode@odata.type': 'Edm.Guid',
+      'CustomerCode': 'c9da6455-213d-42c9-9a79-3e9149a57833',
+      'CustomerSince@odata.type': 'Edm.DateTime',
+      'CustomerSince': '2008-07-10T00:00:00',
+      'IsActive': true,
+      'NumberOfOrders@odata.type': 'Edm.Int64',
+      'NumberOfOrders': '255',
+      'PartitionKey': 'mypartitionkey',
+      'RowKey': rowkey,
+    };
+
+    return payload;
   }
 
 }

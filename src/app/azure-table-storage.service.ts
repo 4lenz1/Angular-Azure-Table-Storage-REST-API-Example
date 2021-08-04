@@ -48,9 +48,19 @@ export class AzureTableStorageService {
 
   queryEntitiesWithFilterAndSelect(tableName: string, filter: string, select: string): Observable<any> {
     ///myaccount/Customers()?$filter=(Rating%20ge%203)%20and%20(Rating%20le%206)&$select=PartitionKey,RowKey,Address,CustomerSince
-    const queryString: string = `?$filter=${filter}&$select=${select}`;
-    return this.queryEntities(tableName + '()', queryString);
+    const queryString: string = `()?$filter=${filter}&$select=${select}`;
+    return this.queryEntities(this.accountName + '/' + tableName, queryString);
   }
+
+  insertEntity(tableName: string, payload: {}): Observable<any> {
+    const operator: string = `${tableName}`;
+    const httpOptions: { headers: HttpHeaders } = { headers: this.generateHeader(operator) };
+
+    return this.http.post(`${this.entitiesEndpoint}${tableName}`, payload, httpOptions);
+
+  }
+
+
 
   private queryEntities(tableName: string, queryString: string): Observable<any> {
     const operator: string = `${tableName}${queryString}`;

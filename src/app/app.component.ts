@@ -62,7 +62,7 @@ export class AppComponent {
 
   onQueryEntitiesWithFilterAndSelectClick() {
     // query entites with filter
-    const filter: string = '(Rowkey ge 1611590861)';
+    const filter: string = '(Rowkey eq 1611590861)';
 
     const select: string[] = ['PartitionKey', 'RowKey', 'Data', 'Version'];
 
@@ -71,6 +71,40 @@ export class AppComponent {
       .subscribe(response => {
         console.log('queryEntites', response);
       }, err => console.error('error on queryEntites', err));
+  }
+
+
+  onInsertEntityClick() {
+
+    const tableName = 'myTable';
+    const rowkey: string = Math.floor(Math.random() * 1000).toString();
+    const payload: {} = {
+      // copy from https://docs.microsoft.com/en-us/rest/api/storageservices/insert-entity
+      "Address": 'Mountain View',
+      "Age": 23,
+      "AmountDue": 200.23,
+      "CustomerCode@odata.type": "Edm.Guid",
+      "CustomerCode": "c9da6455-213d-42c9-9a79-3e9149a57833",
+      "CustomerSince@odata.type": "Edm.DateTime",
+      "CustomerSince": "2008-07-10T00:00:00",
+      "IsActive": true,
+      "NumberOfOrders@odata.type": "Edm.Int64",
+      "NumberOfOrders": "255",
+      "PartitionKey": "mypartitionkey",
+      "RowKey": rowkey,
+    };
+    this.azureTableStorageService
+      .insertEntity(tableName, payload)
+      .subscribe(response => {
+        console.log('entities inserted', response);
+      }
+        , err => {
+          console.error('error on insertEntity', err);
+          // table already created
+          if (err.error['odata.error'].code === 'TableNotFound') {
+            console.log(`cannot insert eneity , please create table named ${tableName} first`);
+          }
+        });
   }
 
 }

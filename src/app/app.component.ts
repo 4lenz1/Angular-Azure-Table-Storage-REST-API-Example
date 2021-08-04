@@ -60,7 +60,7 @@ export class AppComponent {
       }, err => console.error('error on queryEntites', err));
   }
 
-  onQueryEntitiesWithFilterAndSelect() {
+  onQueryEntitiesWithFilterAndSelectClick() {
     // query entites with filter
     const filter: string = '(Rowkey ge 1611590861)';
 

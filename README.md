@@ -1,6 +1,26 @@
-# Test
+# Access Azure Table Storage Service with REST API Angular
+## How to use 
+### 1. Add crediental in root path 
+create a file named `crediental.json` with following format 
+
+```json
+{
+  "accesskey" : "AZURE ACCESS KEY",
+  "accountName" : "STORAGE ACCOUNT NAME"
+}
+```
+![](https://i.imgur.com/0lW8wQD.png)
+
+### 2. Copy Paste info from Azure Storage Account
+![](https://i.imgur.com/RxohfiT.png)
+
+
+### 3. run ng serve and test the result 
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 11.2.13.
+
+## install 
+`npm install`
 
 ## Development server
 

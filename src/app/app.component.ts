@@ -106,12 +106,15 @@ export class AppComponent {
     }
     this.azureTableStorageService.deleteEntity(this.testTableName, filter)
       .subscribe(
-        response => console.log(response)
+        response => {
+          console.log(response);
+          this.setLastEntity(null);
+        }
         , err => console.error('error on deleteEntity')
       );
   }
 
-  private setLastEntity(payload: {}): void {
+  private setLastEntity(payload: {} | null): void {
     console.log('set the lastest entity');
     this.lastPayload = payload;
   }

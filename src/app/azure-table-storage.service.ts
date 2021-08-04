@@ -22,21 +22,21 @@ export class AzureTableStorageService {
 
   createTable(tableName: string): Observable<any> {
     // set http options
-    const httpOptions: { headers: HttpHeaders } = { headers: this.generateHeader('Tables') };
+    const httpOptions: { headers: HttpHeaders } = { headers: this.generateDefaultHeader('Tables') };
 
     return this.http.post<any>(this.tableEndPoint, JSON.stringify({ "TableName": tableName }), httpOptions);
   }
 
   // list all table under storage account
   queryTable(): Observable<any> {
-    const httpOptions: { headers: HttpHeaders } = { headers: this.generateHeader('Tables') };
+    const httpOptions: { headers: HttpHeaders } = { headers: this.generateDefaultHeader('Tables') };
 
     return this.http.get(this.tableEndPoint, httpOptions);
   }
   // delete table
   deleteTable(tableName: string): Observable<any> {
     const operator: string = `Tables('${tableName}')`
-    const httpOptions: { headers: HttpHeaders } = { headers: this.generateHeader(operator) };
+    const httpOptions: { headers: HttpHeaders } = { headers: this.generateDefaultHeader(operator) };
 
     return this.http.delete(`${this.tableEndPoint}('${tableName}')`, httpOptions);
   }
@@ -55,29 +55,25 @@ export class AzureTableStorageService {
 
   insertEntity(tableName: string, payload: {}): Observable<any> {
     const operator: string = `${tableName}`;
-    const httpOptions: { headers: HttpHeaders } = { headers: this.generateHeader(operator) };
+    const httpOptions: { headers: HttpHeaders } = { headers: this.generateDefaultHeader(operator) };
 
     return this.http.post(`${this.entitiesEndpoint}${tableName}`, payload, httpOptions);
   }
 
   deleteEntity(tableName: string, filter: { partitionKey: string, rowKey: string }): Observable<any> {
     const queryString = `${tableName}(PartitionKey='${filter.partitionKey}',RowKey='${filter.rowKey}')`;
-    const httpOptions: { headers: HttpHeaders } = { headers: this.generateHeader(queryString) };
 
-    // require If-Match in delete
-    const deleteHeaderOption = {
-      headers : new Headers({ 'Content-Type': 'application/'})
-    };
-    httpOptions.headers.set('If-Match', '*');
+    // using let because ned to update  If-Match in header
+    let httpOptions: { headers: HttpHeaders } = { headers: this.generateDefaultHeader(queryString) };
+    httpOptions.headers = httpOptions.headers.set('If-Match', '*');
 
     return this.http.delete(`${this.entitiesEndpoint}${queryString}`, httpOptions);
   }
 
 
-
   private queryEntities(tableName: string, queryString: string): Observable<any> {
     const operator: string = `${tableName}${queryString}`;
-    const httpOptions: { headers: HttpHeaders } = { headers: this.generateHeader(operator) };
+    const httpOptions: { headers: HttpHeaders } = { headers: this.generateDefaultHeader(operator) };
     return this.http.get<any>(`${this.entitiesEndpoint}${tableName}${queryString}`, httpOptions);
   }
 
@@ -100,7 +96,7 @@ export class AzureTableStorageService {
   }
 
   // generate header
-  private generateHeader(operator: string): HttpHeaders {
+  private generateDefaultHeader(operator: string): HttpHeaders {
     console.log('query operator', operator);
     const date = new Date().toUTCString();
     const authentication: string = this.generateAuthorization(operator);

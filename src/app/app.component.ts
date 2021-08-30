@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { AzureTableStorageService } from './azure-table-storage.service';
+import rowKeyAndPartitionKeyModel from './rowKeyAndPartitionKey.model';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -49,9 +50,9 @@ export class AppComponent {
 
   onQueryEntitiesClick(): void {
     // query entites
-    const filter: { partitionKey: string, rowKey: string } = {
-      partitionKey: '10s',
-      rowKey: '1611590681'
+    const filter: rowKeyAndPartitionKeyModel = {
+      PartitionKey: '10s',
+      RowKey: '1611590681'
     };
 
 
@@ -100,9 +101,9 @@ export class AppComponent {
       return;
     }
     const lastPayload = this.getLastEntity();
-    const filter: { partitionKey: string, rowKey: string } = {
-      rowKey: lastPayload['RowKey'],
-      partitionKey: lastPayload['PartitionKey'].toString(),
+    const filter: rowKeyAndPartitionKeyModel = {
+      RowKey: lastPayload['RowKey'],
+      PartitionKey: lastPayload['PartitionKey'].toString(),
     }
     this.azureTableStorageService.deleteEntity(this.testTableName, filter)
       .subscribe(
